@@ -472,25 +472,29 @@ function updateStockDisplay() {
     }
 }
 
+// Continue the script from where it ended:
+
 function increaseStock(productName) {
-    if (isAdmin) {
-        const inputElement = document.getElementById(`increase-quantity-${productName.replace(/\s+/g, '-')}`);
-        const increaseAmount = parseInt(inputElement.value);
-        if (!isNaN(increaseAmount) && increaseAmount > 0) {
-            productStock[productName] += increaseAmount; // Increase stock
-            updateProductStock(productName); // Update stock display
-            updateStockDisplay(); // Refresh all stock elements
-            inputElement.value = ''; // Clear the input field
-        } else {
-            alert('Please enter a valid quantity to increase stock.');
-        }
+    const inputField = document.getElementById(`increase-quantity-${productName.replace(/\s+/g, '-')}`);
+    const increaseValue = parseInt(inputField.value);
+    
+    if (!isNaN(increaseValue) && increaseValue > 0) {
+        productStock[productName] += increaseValue;
+        updateProductStock(productName);
+        updateStockDisplay();
+    } else {
+        alert('Please enter a valid quantity to increase.');
     }
+    
+    inputField.value = ''; // Reset input field
 }
 
+// Initialize admin controls on page load if admin is logged in
 document.addEventListener('DOMContentLoaded', function() {
-    showAdminControls(); // عرض التحكم الإداري
-    loadStock(); // تحميل المخزون من localStorage
+    showAdminControls(); // Call function to show admin controls if user is admin
+    updateStockDisplay(); // Update the display for stock counts
 });
+
 function loadStock() {
     const savedStock = localStorage.getItem('productStock');
     if (savedStock) {
