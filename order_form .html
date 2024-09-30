@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Form</title>
-    <link rel="website icon" type="png"  href="img/4660619.png">
+    <link rel="website icon" type="png" href="img/4660619.png">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -37,7 +37,6 @@
     <div class="container">
         <h1 class="my-4 text-center">Order Form</h1>
         <form id="orderForm">
-            <!-- Form fields remain the same -->
             <div class="form-group">
                 <div id="datetime"></div><br><br>
                 <label for="email">Email Address</label>
@@ -51,8 +50,8 @@
             </div>
             <div class="form-group">
                 <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" class="form-control" required>
-                <div class="invalid-feedback">Please enter a valid phone number.</div>
+                <input type="tel" id="phone" name="phone" class="form-control" required pattern="^\00962[0-9]{7,9}$" placeholder="009627XXXXXXXX">
+                <div class="invalid-feedback">Please enter a valid phone number starting with +962 followed by 7 to 9 digits.</div>
             </div>
             <div class="form-group">
                 <label for="city">City</label>
@@ -65,9 +64,7 @@
                 </select>
                 <div class="invalid-feedback">Please select a city.</div>
             </div>
-            <!-- Display cart items here -->
             <div id="cartItems" class="mt-4"></div>
-
             <div class="total-price" id="totalPrice">
                 Total Price: $0
             </div>
@@ -115,20 +112,6 @@
                 return totalCost;
             }
 
-            // Function to get delivery cost
-            function getDeliveryCost(delivery) {
-                switch (delivery) {
-                    case 'local':
-                        return 20;
-                    case 'regional':
-                        return 50;
-                    case 'national':
-                        return 100;
-                    default:
-                        return 0;
-                }
-            }
-
             // Function to get city adjustment
             function getCityAdjustment(city) {
                 switch (city) {
@@ -145,14 +128,12 @@
                 }
             }
 
-            // Function to update the total price based on delivery area and city
+            // Function to update the total price based on city
             function updateTotalPrice(cartTotal) {
                 const city = form.city.value;
-                const delivery = form.delivery.value;
-                const deliveryCost = getDeliveryCost(delivery);
                 const cityAdjustment = getCityAdjustment(city);
 
-                const totalCost = cartTotal + deliveryCost + cityAdjustment;
+                const totalCost = cartTotal + cityAdjustment;
                 totalPriceElement.textContent = `Total Price: $${totalCost}`;
 
                 return totalCost;
@@ -163,12 +144,7 @@
             const cartTotal = displayCartItems(cart);
             updateTotalPrice(cartTotal);
 
-            // Update total price when delivery or city changes
-            form.delivery.addEventListener('change', function() {
-                const cartTotal = displayCartItems(getCartItems());
-                updateTotalPrice(cartTotal);
-            });
-
+            // Update total price when city changes
             form.city.addEventListener('change', function() {
                 const cartTotal = displayCartItems(getCartItems());
                 updateTotalPrice(cartTotal);
@@ -187,7 +163,6 @@
                 const address = form.address.value;
                 const phone = form.phone.value;
                 const city = form.city.value;
-                const delivery = form.delivery.value;
 
                 const cartItems = getCartItems();
                 const cartTotal = displayCartItems(cartItems);
@@ -198,7 +173,6 @@
                     address: address,
                     phone: phone,
                     city: city,
-                    delivery: delivery,
                     totalCost: totalCost, // Ensure this is included
                     cartItems: cartItems.map(item => `${item.name} - $${item.price}`).join(', ')
                 };
@@ -219,16 +193,16 @@
         });
 
         function updateDateTime() {
-    var dateTimeElement = document.getElementById("datetime");
-    var now = new Date();
-    var dateTimeString = "Current Date and Time: " + now.toLocaleDateString() + " " + now.toLocaleTimeString();
-    dateTimeElement.textContent = dateTimeString;
-}
+            var dateTimeElement = document.getElementById("datetime");
+            var now = new Date();
+            var dateTimeString = "Current Date and Time: " + now.toLocaleDateString() + " " + now.toLocaleTimeString();
+            dateTimeElement.textContent = dateTimeString;
+        }
 
-document.addEventListener("DOMContentLoaded", function() {
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
-});
+        document.addEventListener("DOMContentLoaded", function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        });
     </script>
 </body>
 </html>
