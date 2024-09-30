@@ -475,25 +475,37 @@ function updateStockDisplay() {
 // Continue the script from where it ended:
 
 function increaseStock(productName) {
-    const inputField = document.getElementById(`increase-quantity-${productName.replace(/\s+/g, '-')}`);
-    const increaseValue = parseInt(inputField.value);
-    
-    if (!isNaN(increaseValue) && increaseValue > 0) {
-        productStock[productName] += increaseValue;
-        updateProductStock(productName);
-        updateStockDisplay();
-    } else {
-        alert('Please enter a valid quantity to increase.');
-    }
-    
-    inputField.value = ''; // Reset input field
-}
+            const inputElement = document.getElementById(`increase-quantity-${productName.replace(/\s+/g, '-')}`);
+            const increaseAmount = parseInt(inputElement.value);
 
-// Initialize admin controls on page load if admin is logged in
-document.addEventListener('DOMContentLoaded', function() {
-    showAdminControls(); // Call function to show admin controls if user is admin
-    updateStockDisplay(); // Update the display for stock counts
-});
+            if (isNaN(increaseAmount) || increaseAmount <= 0) {
+                alert("Please enter a valid quantity to increase.");
+                return;
+            }
+
+            productStock[productName] += increaseAmount; // Increase stock count
+            updateProductStock(productName);
+            inputElement.value = ''; // Clear the input field
+            alert(`Stock for ${productName} increased by ${increaseAmount}.`);
+        }
+
+        function updateProductStock(productName) {
+            const stockElement = document.getElementById(`stock-${productName.replace(/\s+/g, '-')}`);
+            if (stockElement) {
+                stockElement.innerText = productStock[productName];
+            }
+            // (Additional logic to update button state)
+        }
+
+        // (Other functions remain unchanged)
+
+        // Initialize stock display for all products
+        document.addEventListener('DOMContentLoaded', function() {
+            Object.keys(productStock).forEach(productName => {
+                updateProductStock(productName);
+            });
+        });
+
 
 function loadStock() {
     const savedStock = localStorage.getItem('productStock');
